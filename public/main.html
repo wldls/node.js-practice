@@ -7,9 +7,75 @@
 	<title>main.html</title>
 </head>
 <body>
-	<form action="email_post" method="post">
+	<form action="/email/form" method="post">
 		<p>email : <input type="text" name="email"></p>
+		<p>name : <input type="text" name="name"></p>
 		<p><input type="submit"></p>
 	</form>
+	<button type="button" class="save">save</button>
+	<button type="button" class="load">load list</button>
+	<div class="result"></div>
+	<script>
+		document.querySelector('.save').addEventListener('click', function(){
+			// var inputData = document.forms[0].elements[0].value;
+			var email = document.querySelector('input[name="email"]').value;
+			var name = document.querySelector('input[name="name"]').value;
+
+			if(!email || !name){
+				console.log('insert name or email');
+				return false;
+			}
+
+			sendAjax('http://localhost:3000/email/save', {'email': email, 'name': name});
+		});
+
+		document.querySelector('.load').addEventListener('click', function(){
+			var email = document.querySelector('input[name="email"]').value;
+
+			load('http://localhost:3000/email/loadName', email);
+		});
+
+		function sendAjax(url, data){
+			var data = JSON.stringify(data);
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', url);
+			xhr.setRequestHeader('Content-Type', 'application/json');	// 서버로 json 형태의 데이터를 보낼 때 타입을 작성
+			xhr.send(data);
+			xhr.addEventListener('load', function(){
+				var result = JSON.parse(xhr.responseText);
+				var resultDiv = document.querySelector('.result');
+
+				if(!result.result){
+					resultDiv.innerHTML = 'your email is not vaild'
+				}else{
+					resultDiv.innerHTML = result.name;
+				}
+				
+			});
+		}
+
+		// function load(url, data){
+		// 	var data = {'email': data};
+		// 	data = JSON.stringify(data);
+		// 	var xhr = new XMLHttpRequest();
+		// 	xhr.open('GET', url);
+		// 	xhr.setRequestHeader('Content-Type', 'application/json');	// 서버로 json 형태의 데이터를 보낼 때 타입을 작성
+		// 	xhr.send(data);
+		// 	xhr.addEventListener('load', function(){
+		// 		// var result = JSON.parse(xhr.responseText);
+
+		// 		// console.log(xhr.responseText);
+
+		// 		// var resultDiv = document.querySelector('.result');
+
+		// 		// if(!result.result){
+		// 		// 	resultDiv.innerHTML = 'your email is not vaild'
+		// 		// }else{
+		// 		// 	resultDiv.innerHTML = result.email;
+		// 		// }
+				
+		// 	});
+		// }
+	</script>
 </body>
 </html>
