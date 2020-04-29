@@ -8,17 +8,17 @@
 </head>
 <body>
 	<form id="login_form" action="/login_form" method="POST">
-		<p>id: <input type="text" name="id"></p>
+		<p>id: <input type="text" name="email"></p>
 		<p>password: <input type="text" name="password"></p>
+		<p><%= message %></p>
 	</form>
 	<button type="button" class="login">login</button>
 	<div class="result"></div>
 	<script>
 		document.querySelector('.login').addEventListener('click', function(){
-			console.log();
-			var id = document.querySelector('input[name="id"]').value;
-			var pw = document.querySelector('input[name="password"]').value
-			sendAjax('http://localhost:3000/login_form', {'id': id, 'pw': pw});
+			var email = document.querySelector('input[name="email"]').value;
+			var password = document.querySelector('input[name="password"]').value
+			sendAjax('http://localhost:3000/login', {'email': email, 'password': password});
 		});
 
 		function sendAjax(url, data){
@@ -29,8 +29,14 @@
 			xhr.send(data);
 			xhr.addEventListener('load', function(){
 				var result = JSON.parse(xhr.responseText);
-				if(result.result !== 'ok') return;
-				document.querySelector('.result').innerHTML = `welcome ${result.id} !`;
+				var resultDiv = document.querySelector('.result');
+
+				if(!result.email){
+					resultDiv.innerHTML = result;
+				}else{
+					// resultDiv.innerHTML = `welcome ${result.email} !`;
+					window.location.href = "/main";
+				}
 			});
 		}
 	</script>
