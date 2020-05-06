@@ -54,7 +54,7 @@ router.get('/:title', function(req, res){
 	});
 });
 
-// 4. /movie, DELETE
+// 4. /movie/:title, DELETE
 router.delete('/:title', function(req, res){
 	var title = req.params.title;
 	var resData = {};
@@ -62,6 +62,26 @@ router.delete('/:title', function(req, res){
 	MovieModel.remove({title: title}, function(err, output){
 		if(err) return res.status(500).send({error: 'database failure'});
 
+		if(output.n){
+			resData.result = 1;
+			resData.data = title;
+		}else{
+			resData.result = 0;
+		}
+		res.json(resData);
+	});
+});
+
+// 4. /movie/:title, PUT
+router.put('/:title', function(req, res){
+	var title = req.params.title;
+	console.log(req.body.type);
+	var set = {type: req.body.type, grade: req.body.grade, actor: req.body.actor};
+	var resData = {};
+
+	MovieModel.update({title: title}, set,function(err, output){
+		if(err) return res.status(500).send({error: 'database failure'});
+		console.log(output);
 		if(output.n){
 			resData.result = 1;
 			resData.data = title;

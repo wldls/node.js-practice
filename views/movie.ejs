@@ -24,7 +24,7 @@
             </li>
 
             <li class="post">
-                <form action="" method="post">
+                <form action="" method="post" id="create_movie">
                    <div> 제목 : <input type="text" name="title" placeholder="Terminator"> </div>
                    <div> 장르 : <input type="text" name="type" placeholder="drama"> </div>
                    <div> 평점 : <input type="text" name="grade" placeholder="8.43"> </div>
@@ -48,14 +48,14 @@
             </li>
 
             <li class="update_id">
-                <form action="" method="post">
+                <form action="" method="post" id="update_movie">
                    <div> 제목 : <input type="text" name="title" placeholder="Terminator"> </div>
                    <div> 장르 : <input type="text" name="type"  placeholder="drama"> </div>
                    <div> 평점 : <input type="text" name="grade" placeholder="8.43"> </div>
                    <div> 주연 : <input type="text" name="actor" placeholder="Tom cruise"> </div>
                 </form>
                 <button>영화정보갱신</button>
-                <section class="showResult">ㅁㅁ</section>
+                <section class="showResult"></section>
             </li>
 
             <li class="get_min">
@@ -93,7 +93,7 @@
                 case "post":
                     url = "/movie";
                     method = "POST";
-                    let inputs = [].slice.call(document.querySelector("form").elements);
+                    let inputs = [].slice.call(document.getElementById("create_movie").elements);
                     data = inputs.reduce(function(pre,next) {
                         pre[next.name] = next.value;
                         return pre;
@@ -108,7 +108,13 @@
                     method = "GET";
                     fn = function(result) {
                         if(result.result === 1) {
-                            showResult.innerHTML = result.data[0].actor;
+                            var data = result.data[0];
+                            var html = '<p>title: ' + data.title + '</p>';
+                                html += '<p>type: ' + data.type + '</p>';
+                                html += '<p>grade: ' + data.grade + '</p>';
+                                html += '<p>actor: ' + data.actor + '</p>';
+
+                            showResult.innerHTML = html;
                         }else {
                             showResult.innerHTML = "해당하는 영화가 없네요..";
                         }
@@ -118,9 +124,24 @@
                     url = "/movie/"+li.getElementsByTagName("input")[0].value;
                     method = "DELETE";
                     fn = function(result) {
-                        console.log(result);
                         if(result.result === 1) {
                             showResult.innerHTML = "선택한영화" + result.data+ "가 잘 삭제됐습니다";
+                        }else{
+                            showResult.innerText = "해당영화가 없습니다";
+                        }
+                    }
+                    break;
+                case "update_id":
+                    url = "/movie/"+li.getElementsByTagName("input")[0].value;
+                    method = "PUT";
+                    let updateInputs = [].slice.call(document.getElementById("update_movie").elements);
+                    data = updateInputs.reduce(function(pre,next) {
+                        pre[next.name] = next.value;
+                        return pre;
+                    }, {});
+                    fn = function(result) {
+                        if(result.result === 1) {
+                            showResult.innerHTML = "선택한영화" + result.data+ "가 잘 수정됐습니다";
                         }else{
                             showResult.innerText = "해당영화가 없습니다";
                         }
