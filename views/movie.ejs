@@ -118,6 +118,7 @@
                     url = "/movie/"+li.getElementsByTagName("input")[0].value;
                     method = "DELETE";
                     fn = function(result) {
+                        console.log(result);
                         if(result.result === 1) {
                             showResult.innerHTML = "선택한영화" + result.data+ "가 잘 삭제됐습니다";
                         }else{
